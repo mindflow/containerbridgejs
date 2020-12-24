@@ -78,7 +78,7 @@ export class ContainerFunctions {
      * @param {object} params 
      */
     static fetch(url, params, connectionTimeout = 1000, responseTimeout = 4000) {
-        return ContainerBridge.timeout(connectionTimeout, window.fetch(url, params));
+        return ContainerFunctions.timeout(connectionTimeout, window.fetch(url, params));
     }
 
     // Storage bridge
