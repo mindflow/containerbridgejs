@@ -1,4 +1,4 @@
-import { Logger } from './coreutil_v1.js'
+import { Logger } from './coreutil_v1.js';
 
 const LOG = new Logger("ContainerFunctions");
 
