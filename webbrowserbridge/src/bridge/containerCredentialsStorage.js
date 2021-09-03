@@ -2,11 +2,15 @@ export class ContainerCredentialsStorage {
 
     static store(username, password) {
         if (window.PasswordCredential) {
-			var passwordCredential = new PasswordCredential({
+			const passwordCredential = new PasswordCredential({
 				id: username,
 				password: password
-			});
-			return navigator.credentials.store(passwordCredential);
+            });
+
+            //const passwordCredentialsData = new CredentialCreationOptions();
+			return navigator.credentials.store(passwordCredential).then((credential) => {
+                LOG.info(credential);
+            });
         }
         return Promise.resolve();
     }
