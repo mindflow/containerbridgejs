@@ -47,25 +47,85 @@ export class ContainerElement {
         return document.createElementNS(nameSpace, name);
     }
 
+    /**
+     * 
+     * @param {Element} element 
+     */
+    static appendRootUiChild(element) {
+        const header = document.getElementsByTagName("body")[0];
+        header.appendChild(element);
+    }
+
 
     /**
      * 
-     * @param {String} parentElementTagName 
      * @param {Element} element 
      */
-    static addElement(parentElementTagName, element) {
-        const header = document.getElementsByTagName(parentElementTagName)[0];
-        header.append(element);
+     static appendRootMetaChild(element) {
+        const header = document.getElementsByTagName("head")[0];
+        header.appendChild(element);
     }
 
     /**
      * 
-     * @param {String} parentElementTagName 
-     * @param {Element} element 
+     * @param {Element} parentElement 
+     * @param {Element} childElement 
      */
-    static preprendElement(parentElementTagName, element) {
-        const body = document.getElementsByTagName(parentElementTagName)[0];
-        body.prepend(element);
+     static prependChild(parentElement, childElement) {
+        parentElement.prepend(childElement);
+    }
+
+
+    /**
+     * 
+     * @param {Element} parentElement 
+     * @param {Element} childElement 
+     */
+    static appendChild(parentElement, childElement) {
+        parentElement.appendChild(childElement);
+    }
+
+    /**
+     * 
+     * @param {Element} element 
+     * @param {String} eventType 
+     * @param {Function} listener 
+     * @param {boolean} capture 
+     */
+    static addEventListener(element, eventType, listener, capture) {
+        element.addEventListener(eventType, listener, capture);
+    }
+
+    /**
+     * 
+     * @param {Element} element 
+     * @param {String} attributeKey 
+     * @param {any} attributeValue 
+     */
+    static setAttribute(element, attributeKey, attributeValue) {
+        element.setAttribute(attributeKey, attributeValue);
+    }
+
+    /**
+     * 
+     * @param {Element} element 
+     * @param {String} attributeKey 
+     */
+     static getAttribute(element, attributeKey) {
+        return element.getAttribute(attributeKey);
+    }
+
+    /**
+     * 
+     * @param {Element} prentElement 
+     * @param {Element} childElement 
+     */
+    static contains(prentElement, childElement) {
+        return prentElement.contains(childElement);
+    }
+
+    static isUIElement(value) {
+        return value instanceof HTMLElement;
     }
 
 }
