@@ -9,5 +9,14 @@ export class ContainerAsync {
         });
     }
 
+    /**
+     * 
+     * @param {number} milliseconds 
+     * @param {function} callback 
+     */
+    static delay(milliseconds, callback) {
+        return setTimeout(callback, milliseconds);
+    }
+
 
 }

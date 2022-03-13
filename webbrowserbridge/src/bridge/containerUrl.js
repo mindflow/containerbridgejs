@@ -1,4 +1,5 @@
-import { Logger } from "coreutil_v1";
+import { Logger, ObjectFunction } from "coreutil_v1";
+import { ContainerWindow } from "./containerWindow";
 
 const LOG = new Logger("ContainerUrl");
 
@@ -37,5 +38,14 @@ export class ContainerUrl {
      */
     static currentUrl() {
         return window.location.href;
+    }
+
+    /**
+     * 
+     * @param {ObjectFunction} objectFunction
+     * @param {any} eventWrapperClass
+     */
+    static addUserNavigateListener(objectFunction, eventWrapperClass) {
+        ContainerWindow.addEventListener("popstate", objectFunction, eventWrapperClass);
     }
 }
