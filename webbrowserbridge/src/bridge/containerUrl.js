@@ -9,9 +9,14 @@ export class ContainerUrl {
      * 
      * @param {String} urlString 
      */
-    static loadUrl(urlString) {
+    static go(urlString) {
         window.location = urlString;
     }
+
+    static back() {
+        window.history.back();
+    }
+
 
      /**
      * 
