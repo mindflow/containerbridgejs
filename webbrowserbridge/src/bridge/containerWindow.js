@@ -1,16 +1,16 @@
-import { ObjectFunction } from "coreutil_v1";
+import { Method } from "coreutil_v1";
 
 export class ContainerWindow {
 
     /**
      * 
      * @param {String} type 
-     * @param {ObjectFunction} listener 
+     * @param {Method} listener 
      * @param {any} eventWrapperClass 
      */    
-    static addEventListener(type, objectFunction, eventWrapperClass) {
+    static addEventListener(type, method, eventWrapperClass) {
         window.addEventListener(type, (event) => {
-            objectFunction.call(new eventWrapperClass(event));
+            method.call(new eventWrapperClass(event));
         });
     }
     
