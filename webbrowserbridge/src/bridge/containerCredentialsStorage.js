@@ -1,6 +1,6 @@
 export class ContainerCredentialsStorage {
 
-    static store(username, password) {
+    static async store(username, password) {
         if (window.PasswordCredential) {
 			const passwordCredential = new PasswordCredential({
 				id: username,
@@ -8,11 +8,11 @@ export class ContainerCredentialsStorage {
             });
 
             //const passwordCredentialsData = new CredentialCreationOptions();
-			return navigator.credentials.store(passwordCredential).then((credential) => {
-                LOG.info(credential);
-            });
+			const credential = await navigator.credentials.store(passwordCredential);
+            LOG.info(credential);
+            return credential;
         }
-        return Promise.resolve();
+        return null;
     }
 
 }
