@@ -18,5 +18,16 @@ export class ContainerAsync {
         return setTimeout(callback, milliseconds);
     }
 
-
+    /**
+     * 
+     * @param {long} milliseconds 
+     * @returns Promise which resolves when milliseconds have passed
+     */
+    static pause(milliseconds) {
+        return new Promise((resolve) => {
+            setTimeout(() => {
+                resolve();
+            }, milliseconds);
+        });
+    }
 }
