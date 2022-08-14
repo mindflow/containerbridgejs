@@ -1,4 +1,4 @@
-import { Logger } from "coreutil_v1";
+import { Logger, TimePromise } from "coreutil_v1";
 
 const LOG = new Logger("ContainerElement");
 
@@ -126,6 +126,23 @@ export class ContainerElement {
 
     static isUIElement(value) {
         return value instanceof HTMLElement;
+    }
+
+    /**
+     * 
+     * @param {Element} element element to scroll lock
+     * @param {Number} x x coordinate to lock to
+     * @param {Number} y y coordinate to lock to
+     * @param {Number} duration milliseconds
+     */
+    static scrollLockTo(element, x, y, duration) {
+        const scrollTo = (event) => {
+            event.target.scrollTo(x,y);
+        }
+        element.addEventListener("scroll", scrollTo);
+        TimePromise.asPromise(duration, () => {
+            element.removeEventListener("scroll", scrollTo);
+        });
     }
 
 }
