@@ -7,11 +7,14 @@ export class ContainerWindow {
      * @param {String} type 
      * @param {Method} listener 
      * @param {any} eventWrapperClass 
+     * @return {Method} destroy function
      */    
     static addEventListener(type, method, eventWrapperClass) {
-        window.addEventListener(type, (event) => {
+        const func = (event) => {
             method.call(new eventWrapperClass(event));
-        });
+        }
+        window.addEventListener(type, func);
+        return () => { window.removeEventListener(type, func); }
     }
     
 }
