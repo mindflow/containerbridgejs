@@ -124,6 +124,10 @@ export class ContainerElement {
         return prentElement.contains(childElement);
     }
 
+    static isConnected(element) {
+        return element.isConnected;
+    }
+
     static isUIElement(value) {
         return value instanceof HTMLElement;
     }
