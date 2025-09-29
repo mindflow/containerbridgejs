@@ -1,5 +1,4 @@
-import { Logger, Method, TimePromise } from "coreutil_v1";
-import { ContainerEvent } from "./containerEvent";
+import { Logger, TimePromise } from "coreutil_v1";
 import { ContainerElement } from "./containerElement";
 import { ContainerText } from "./containerText";
 
@@ -66,25 +65,6 @@ export class ContainerElementUtils {
      static appendRootMetaChild(containerElement) {
         const header = document.getElementsByTagName("head")[0];
         header.appendChild(containerElement.element);
-    }
-
-    /**
-     * 
-     * @param {ContainerElement} parentElement 
-     * @param {ContainerElement} childElement 
-     */
-     static prependChild(parentElement, childElement) {
-        parentElement.prepend(childElement);
-    }
-
-
-    /**
-     * 
-     * @param {ContainerElement} parentElement 
-     * @param {ContainerElement} childElement 
-     */
-    static appendChild(parentElement, childElement) {
-        parentElement.appendChild(childElement);
     }
 
     /**
