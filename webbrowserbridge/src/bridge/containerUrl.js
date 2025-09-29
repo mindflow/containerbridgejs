@@ -48,9 +48,8 @@ export class ContainerUrl {
     /**
      * 
      * @param {Method} method
-     * @param {any} eventWrapperClass
      */
-    static addUserNavigateListener(method, eventWrapperClass) {
-        ContainerWindow.addEventListener("popstate", method, eventWrapperClass);
+    static addUserNavigateListener(method) {
+        ContainerWindow.addEventListener("popstate", method);
     }
 }

@@ -1,4 +1,7 @@
-import { Logger, TimePromise } from "coreutil_v1";
+import { Logger, Method, TimePromise } from "coreutil_v1";
+import { ContainerEvent } from "./containerEvent";
+import { ContainerElement } from "./containerElement";
+import { ContainerText } from "./containerText";
 
 const LOG = new Logger("ContainerElement");
 
@@ -9,7 +12,7 @@ export class ContainerElementUtils {
      * @param {string} id 
      */
     static getElementById(id) {
-        return document.getElementById(id);
+        return new ContainerElement(document.getElementById(id));
     }
 
     /**
@@ -17,7 +20,7 @@ export class ContainerElementUtils {
      * @param {string} valeu 
      */
     static createTextNode(value) {
-        return document.createTextNode(value)
+        return new ContainerText(document.createTextNode(value));
     }
 
     /**
@@ -25,7 +28,7 @@ export class ContainerElementUtils {
      * @param {string} name 
      */
     static createElement(name) {
-        return document.createElement(name)
+        return new ContainerElement(document.createElement(name));
     }
 
     /**
@@ -43,32 +46,32 @@ export class ContainerElementUtils {
      * @param {string} name 
      */
     static createElementNS(nameSpace, name) {
-        return document.createElementNS(nameSpace, name);
+        return new ContainerElement(document.createElementNS(nameSpace, name));
     }
 
     /**
      * 
-     * @param {Element} element 
+     * @param {ContainerElement} containerElement 
      */
-    static appendRootUiChild(element) {
+    static appendRootUiChild(containerElement) {
         const header = document.getElementsByTagName("body")[0];
-        header.appendChild(element);
+        header.appendChild(containerElement.element);
     }
 
 
     /**
      * 
-     * @param {Element} element 
+     * @param {ContainerElement} containerElement 
      */
-     static appendRootMetaChild(element) {
+     static appendRootMetaChild(containerElement) {
         const header = document.getElementsByTagName("head")[0];
-        header.appendChild(element);
+        header.appendChild(containerElement.element);
     }
 
     /**
      * 
-     * @param {Element} parentElement 
-     * @param {Element} childElement 
+     * @param {ContainerElement} parentElement 
+     * @param {ContainerElement} childElement 
      */
      static prependChild(parentElement, childElement) {
         parentElement.prepend(childElement);
@@ -77,8 +80,8 @@ export class ContainerElementUtils {
 
     /**
      * 
-     * @param {Element} parentElement 
-     * @param {Element} childElement 
+     * @param {ContainerElement} parentElement 
+     * @param {ContainerElement} childElement 
      */
     static appendChild(parentElement, childElement) {
         parentElement.appendChild(childElement);
@@ -86,43 +89,37 @@ export class ContainerElementUtils {
 
     /**
      * 
-     * @param {Element} element 
-     * @param {String} eventType 
-     * @param {Function} listener 
-     * @param {boolean} capture 
-     */
-    static addEventListener(element, eventType, listener, capture) {
-        element.addEventListener(eventType, listener, capture);
-    }
-
-    /**
-     * 
-     * @param {Element} element 
+     * @param {ContainerElement} element 
      * @param {String} attributeKey 
      * @param {any} attributeValue 
      */
-    static setAttribute(element, attributeKey, attributeValue) {
-        element.setAttribute(attributeKey, attributeValue);
+    static setAttributeValue(element, attributeKey, attributeValue) {
+        element.setAttributeValue(attributeKey, attributeValue);
     }
 
     /**
      * 
-     * @param {Element} element 
+     * @param {ContainerElement} element 
      * @param {String} attributeKey 
      */
-     static getAttribute(element, attributeKey) {
-        return element.getAttribute(attributeKey);
+     static getAttributeValue(element, attributeKey) {
+        return element.getAttributeValue(attributeKey);
     }
 
     /**
      * 
-     * @param {Element} prentElement 
-     * @param {Element} childElement 
+     * @param {ContainerElement} parentElement 
+     * @param {ContainerElement} childElement 
      */
-    static contains(prentElement, childElement) {
-        return prentElement.contains(childElement);
+    static contains(parentElement, childElement) {
+        return parentElement.contains(childElement);
     }
 
+    /**
+     * 
+     * @param {ContainerElement} element 
+     * @returns 
+     */
     static isConnected(element) {
         return element.isConnected;
     }
@@ -133,7 +130,7 @@ export class ContainerElementUtils {
 
     /**
      * 
-     * @param {Element} element element to scroll lock
+     * @param {ContainerElement} element element to scroll lock
      * @param {Number} x x coordinate to lock to
      * @param {Number} y y coordinate to lock to
      * @param {Number} duration milliseconds

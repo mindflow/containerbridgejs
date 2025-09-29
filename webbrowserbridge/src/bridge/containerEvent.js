@@ -1,3 +1,5 @@
+import { ContainerElement } from "./containerElement";
+
 export class ContainerEvent {
 
     /**
@@ -23,7 +25,9 @@ export class ContainerEvent {
 
     get files() {
         if (this.event.target && this.event.target.files) {
-            return this.event.target.files;
+            /** @type {HTMLInputElement} */
+            const target = this.event.target;
+            return target.files;
         }
         if (this.event.dataTransfer) {
             /** @type {DataTransfer} */
@@ -65,21 +69,21 @@ export class ContainerEvent {
 
     /**
      * 
-     * @returns {SimpleElement}
+     * @returns {ContainerElement}
      */
     get target(){
         if (this.event && this.event.target) {
-            return ConfiguredFunction.execute("mapElement", this.event.target);
+            return new ContainerElement(this.event.target);
         }
     }
 
     /**
      * 
-     * @returns {SimpleElement}
+     * @returns {ContainerElement}
      */
     get relatedTarget(){
         if (this.event && this.event.relatedTarget) {
-            return ConfiguredFunction.execute("mapElement", this.event.relatedTarget);
+            return new ContainerElement(this.event.relatedTarget);
         }
         return null;
     }
@@ -90,7 +94,7 @@ export class ContainerEvent {
      */
      getRelatedTargetAttribute(attributeName){
         if (this.event.relatedTarget) {
-            return ConfiguredFunction.execute("mapElement", this.event.relatedTarget).getAttributeValue(attributeName);
+            return new ContainerElement(this.event.relatedTarget).getAttributeValue(attributeName);
         }
         return null;
     }
