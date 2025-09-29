@@ -2,8 +2,7 @@ import { Logger, TimePromise } from "coreutil_v1";
 
 const LOG = new Logger("ContainerElement");
 
-export class ContainerElement {
-
+export class ContainerElementUtils {
 
     /**
      * 
