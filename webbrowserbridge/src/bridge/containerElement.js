@@ -273,5 +273,6 @@ export class ContainerElement {
         if(this.element.pause) {
             return this.element.pause();
         }
+        return null;
     }
 }
