@@ -1,6 +1,7 @@
 import { Logger, TimePromise } from "coreutil_v1";
 import { ContainerElement } from "./containerElement";
 import { ContainerText } from "./containerText";
+import { ContainerFileData } from "./containerFileData";
 
 const LOG = new Logger("ContainerElement");
 
@@ -123,6 +124,14 @@ export class ContainerElementUtils {
         TimePromise.asPromise(duration, () => {
             element.removeEventListener("scroll", scrollTo);
         });
+    }
+
+    static toFileDataArray(fileList) {
+        const array = [];
+        for (const file of fileList) {
+            array.push(new ContainerFileData(file));
+        }
+        return array;
     }
 
 }

@@ -1,4 +1,5 @@
 import { ContainerElement } from "./containerElement";
+import { ContainerElementUtils } from "./containerElementUtils";
 
 export class ContainerEvent {
 
@@ -23,17 +24,20 @@ export class ContainerEvent {
         this.event.preventDefault();
     }
 
+    /**
+     * @returns {ContainerFileData[]}
+     */
     get files() {
         if (this.event.target && this.event.target.files) {
             /** @type {HTMLInputElement} */
             const target = this.event.target;
-            return target.files;
+            return ContainerElementUtils.toFileDataArray(target.files);
         }
         if (this.event.dataTransfer) {
             /** @type {DataTransfer} */
             const dataTransfer = this.event.dataTransfer;
             if (dataTransfer.files) {
-                return dataTransfer.files;
+                return ContainerElementUtils.toFileDataArray(dataTransfer.files);
             }
         }
         return [];
