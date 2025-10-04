@@ -6,6 +6,8 @@ export class ContainerFileData {
      */
     constructor(file) {
         this.file = file;
+        this.uploadPercentage = 0;
+        this.uploadComplete = false;
     }
 
     get name() {
