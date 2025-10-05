@@ -33,14 +33,11 @@ export class ContainerHttpClient {
         xhr.open(method, url, true);
         xhr.timeout = timeout;
         xhr.setRequestHeader("Accept", "application/json");
-        xhr.setRequestHeader("Cache-Control", "no-cache");
-        xhr.setRequestHeader("X-Requested-With", "XMLHttpRequest");
-        xhr.setRequestHeader("Content-type", "multipart/form-data");
         if (authentication) {
-            xhr.setRequestHeader("Authorization", "Bearer " + authentication);
+            xhr.setRequestHeader("Authorization", authentication);
         }
         xhr.onprogress = (event) => {
-            progressCallbackMethod.call([event.loaded / event.total]);
+            progressCallbackMethod.call([Math.round((event.loaded / event.total) * 100)]);
         };
         xhr.ontimeout = () => {
             return Promise.reject("Request timed out");

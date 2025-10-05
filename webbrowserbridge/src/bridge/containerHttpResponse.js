@@ -7,7 +7,7 @@ export class ContainerHttpResponse {
      * @param {Function<Promise<String>>} textFunction
      * @param {Number} status
      * @param {String} statusText
-     * @param {Headers} headers
+     * @param {Map<String, String>} headers
      * @param {Boolean} ok
      * @param {Response} response
      */
@@ -25,7 +25,7 @@ export class ContainerHttpResponse {
         /** @type {String} */
         this.statusTextValue = statusText;
 
-        /** @type {Headers} */
+        /** @type {Map<String, String>} */
         this.headersValue = headers;
 
         /** @type {Boolean} */
@@ -66,7 +66,7 @@ export class ContainerHttpResponse {
 
     /**
      * 
-     * @returns {Headers}
+     * @returns {Map<String, String>}
      */
     get headers() {
         return this.headersValue;
@@ -88,6 +88,10 @@ export class ContainerHttpResponse {
     static async _fromResponse(responsePromise) {
 
         const response = await responsePromise;
+        const headers = new Map();
+        for (const pair of response.headers.entries()) {
+            headers.set(pair[0], pair[1]);
+        }
         const jsonPromise = () => response.json();
         const textPromise = () => response.text();
         return new ContainerHttpResponse(
@@ -95,7 +99,7 @@ export class ContainerHttpResponse {
             textPromise,
             response.status,
             response.statusText,
-            response.headers,
+            headers,
             response.ok
         );
     }
@@ -120,21 +124,39 @@ export class ContainerHttpResponse {
         });
 
         const jsonPromiseFunction = () => {
-            uploadPromise.then((response) => {
-                resolve(JSON.parse(response));
-            }).catch((error) => {
-                reject(error);
+            return new Promise((resolve, reject) => {
+                uploadPromise.then((response) => {
+                    resolve(JSON.parse(response));
+                }).catch((error) => {
+                    reject(error);
+                });
             });
         };
         
         const textPromiseFunction = () => {
-            uploadPromise.then((response) => {
-                resolve(response);
-            }).catch((error) => {
-                reject(error);
+            return new Promise((resolve, reject) => {
+                uploadPromise.then((response) => {
+                    resolve(response);
+                }).catch((error) => {
+                    reject(error);
+                });
             });
-        }
+        };
 
-        return new ContainerHttpResponse(jsonPromiseFunction, textPromiseFunction, xhr.status, xhr.statusText, null, xhr.status >= 200 && xhr.status < 300);
+        const responseHeadersString = xhr.getAllResponseHeaders();
+        const headers = new Map();
+        if (responseHeadersString) {
+            const headerPairs = responseHeadersString.split("\u000d\u000a");
+            for (const headerPair of headerPairs) {
+                const index = headerPair.indexOf("\u003a\u0020");
+                if (index > 0) {
+                    const key = headerPair.substring(0, index);
+                    const value = headerPair.substring(index + 2);
+                    headers.set(key, value);
+                }
+            }
+        }
+        await uploadPromise
+        return new ContainerHttpResponse(jsonPromiseFunction, textPromiseFunction, xhr.status, xhr.statusText, headers, xhr.status >= 200 && xhr.status < 300);
     }
 }
