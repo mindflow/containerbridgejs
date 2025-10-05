@@ -3,8 +3,8 @@ import { ContainerAsync } from "./containerAsync";
 export class ContainerHttpResponse {
     
     /**
-     * @param {Function<Promise<Object>>} jsonFunction
-     * @param {Function<Promise<String>>} textFunction
+     * @param {Function} jsonFunction
+     * @param {Function} textFunction
      * @param {Number} status
      * @param {String} statusText
      * @param {Map<String, String>} headers
@@ -13,10 +13,10 @@ export class ContainerHttpResponse {
      */
     constructor(jsonFunction, textFunction, status, statusText, headers, ok) {
 
-        /** @type {Function<Promise<Object>>} */
+        /** @type {Function} */
         this.jsonFunction = jsonFunction;
 
-        /** @type {Function<Promise<String>>} */
+        /** @type {Function} */
         this.textFunction = textFunction;
 
         /** @type {Number} */
@@ -42,7 +42,7 @@ export class ContainerHttpResponse {
 
     /**
      * 
-     * @returns {Promise<string>}
+     * @returns {Promise<String>}
      */
     async text() {
         return await this.textFunction.call();
@@ -50,7 +50,7 @@ export class ContainerHttpResponse {
 
     /**
      * 
-     * @returns {number}
+     * @returns {Number}
      */
     get status() {
         return this.statusValue;
@@ -74,7 +74,7 @@ export class ContainerHttpResponse {
 
     /**
      * 
-     * @returns {boolean}
+     * @returns {Boolean}
      */
     get ok() {
         return this.okValue;
