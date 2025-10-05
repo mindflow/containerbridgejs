@@ -1,5 +1,6 @@
 import { Logger, Method } from "coreutil_v1";
 import { ContainerHttpResponse } from "./containerHttpResponse";
+import { ContainerUploadData } from "./containerUploadData";
 
 const LOG = new Logger("ContainerHttpClient");
 
@@ -14,51 +15,39 @@ export class ContainerHttpClient {
      */
     static async fetch(url, params, timeout = 4000) {
         const responsePromise = fetch(url, params)
-        return ContainerHttpResponse.from(responsePromise, timeout);
+        return ContainerHttpResponse._fromResponse(responsePromise, timeout);
     }
 
     /**
      * 
-     * @param {string} url 
-     * @param {File[]} files 
+     * @param {String} method
+     * @param {String} url 
+     * @param {ContainerUploadData} containerUploadData 
      * @param {Method} progressCallbackMethod 
      * @param {Number} timeout 
      * @returns 
      */
-    static async upload(url, files, authentication = null, progressCallbackMethod = null, timeout = 4000) {
-        const formData = new FormData();
-        for (const file of files) {
-            formData.append("file", file);
-        }
+    static async xhr(method, url, containerUploadData, authentication = null, progressCallbackMethod = null, timeout = 4000) {
 
         const xhr = new XMLHttpRequest();
-        xhr.open("POST", url);
+        xhr.open(method, url, true);
         xhr.timeout = timeout;
-
+        xhr.setRequestHeader("Accept", "application/json");
+        xhr.setRequestHeader("Cache-Control", "no-cache");
+        xhr.setRequestHeader("X-Requested-With", "XMLHttpRequest");
+        xhr.setRequestHeader("Content-type", "multipart/form-data");
         if (authentication) {
             xhr.setRequestHeader("Authorization", "Bearer " + authentication);
         }
-        
         xhr.onprogress = (event) => {
-            callProgressCallbackMethod(progressCallbackMethod, event.loaded, event.total);
+            progressCallbackMethod.call([event.loaded / event.total]);
         };
         xhr.ontimeout = () => {
             return Promise.reject("Request timed out");
         };
-        const uploadPromise = new Promise((resolve, reject) => {
-            xhr.onload = () => {
-                if (xhr.status === 200) {
-                    resolve(xhr.response);
-                } else {
-                    reject(xhr.statusText);
-                }
-            };
-            xhr.ontimeout = () => {
-                reject("Request timed out");
-            };
-        });
-        xhr.send(formData);
-        return uploadPromise;
+
+        xhr.send(containerUploadData._asFormData());
+        return ContainerHttpResponse._fromXhr(xhr);
     }
 
     /**

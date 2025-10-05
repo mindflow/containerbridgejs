@@ -1,5 +1,11 @@
 export class ContainerAsync {
 
+    /**
+     * @template T
+     * @param {number} milliseconds 
+     * @param {Promise<T>} promise 
+     * @returns {Promise<T>}
+     */
     static timeout(milliseconds, promise) {
         return new Promise(function(resolve, reject) {
             setTimeout(function() {
