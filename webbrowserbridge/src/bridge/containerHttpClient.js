@@ -45,7 +45,7 @@ export class ContainerHttpClient {
 
         const formData = containerUploadData._asFormData();
         xhr.send(formData);
-        return ContainerHttpResponse._fromXhr(xhr);
+        return ContainerHttpResponse._fromXhr(xhr, progressCallbackMethod);
     }
 
     /**

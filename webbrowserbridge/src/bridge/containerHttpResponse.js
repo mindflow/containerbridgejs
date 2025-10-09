@@ -107,12 +107,15 @@ export class ContainerHttpResponse {
     /**
      * 
      * @param {XMLHttpRequest} xhr 
+     * @param {Method} progressCallbackMethod
      * @returns {ContainerHttpResponse}
+     * 
      */
-    static async _fromXhr(xhr) {
+    static async _fromXhr(xhr, progressCallbackMethod) {
         const uploadPromise = new Promise((resolve, reject) => {
             xhr.onload = () => {
                 if (xhr.status >= 200 && xhr.status < 300) {
+                    progressCallbackMethod.call([100]);
                     resolve(xhr.response);
                 } else {
                     reject(xhr.response);
