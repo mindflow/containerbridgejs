@@ -112,7 +112,7 @@ export class ContainerHttpResponse {
     static async _fromXhr(xhr) {
         const uploadPromise = new Promise((resolve, reject) => {
             xhr.onload = () => {
-                if (xhr.status === 200) {
+                if (xhr.status >= 200 && xhr.status < 300) {
                     resolve(xhr.response);
                 } else {
                     reject(xhr.response);
@@ -156,7 +156,7 @@ export class ContainerHttpResponse {
                 }
             }
         }
-        await uploadPromise
+        await uploadPromise;
         return new ContainerHttpResponse(jsonPromiseFunction, textPromiseFunction, xhr.status, xhr.statusText, headers, xhr.status >= 200 && xhr.status < 300);
     }
 }

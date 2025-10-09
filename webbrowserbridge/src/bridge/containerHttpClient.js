@@ -43,7 +43,8 @@ export class ContainerHttpClient {
             return Promise.reject("Request timed out");
         };
 
-        xhr.send(containerUploadData._asFormData());
+        const formData = containerUploadData._asFormData();
+        xhr.send(formData);
         return ContainerHttpResponse._fromXhr(xhr);
     }
 
