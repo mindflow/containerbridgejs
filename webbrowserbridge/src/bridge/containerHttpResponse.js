@@ -11,13 +11,16 @@ export class ContainerHttpResponse {
      * @param {Boolean} ok
      * @param {Response} response
      */
-    constructor(jsonFunction, textFunction, status, statusText, headers, ok) {
+    constructor(jsonFunction, textFunction, blobFunction, status, statusText, headers, ok) {
 
         /** @type {Function} */
         this.jsonFunction = jsonFunction;
 
         /** @type {Function} */
         this.textFunction = textFunction;
+
+        /** @type {Function} */
+        this.blobFunction = blobFunction;
 
         /** @type {Number} */
         this.statusValue = status;
@@ -46,6 +49,14 @@ export class ContainerHttpResponse {
      */
     async text() {
         return await this.textFunction.call();
+    }
+
+    /**
+     * 
+     * @returns {Promise<Blob>}
+     */
+    async blob() {
+        return await this.blobFunction.call();
     }
 
     /**
@@ -94,9 +105,11 @@ export class ContainerHttpResponse {
         }
         const jsonPromise = () => response.json();
         const textPromise = () => response.text();
+        const blobPromise = () => response.blob();
         return new ContainerHttpResponse(
             jsonPromise,
             textPromise,
+            blobPromise,
             response.status,
             response.statusText,
             headers,
@@ -146,6 +159,17 @@ export class ContainerHttpResponse {
             });
         };
 
+        const blobPromiseFunction = () => {
+            return new Promise((resolve, reject) => {
+                uploadPromise.then((response) => {
+                    const blob = new Blob([response]);
+                    resolve(blob);
+                }).catch((error) => {
+                    reject(error);
+                });
+            });
+        };
+
         const responseHeadersString = xhr.getAllResponseHeaders();
         const headers = new Map();
         if (responseHeadersString) {
@@ -159,7 +183,15 @@ export class ContainerHttpResponse {
                 }
             }
         }
+
         await uploadPromise;
-        return new ContainerHttpResponse(jsonPromiseFunction, textPromiseFunction, xhr.status, xhr.statusText, headers, xhr.status >= 200 && xhr.status < 300);
+        return new ContainerHttpResponse(
+            jsonPromiseFunction,
+            textPromiseFunction,
+            blobPromiseFunction,
+            xhr.status,
+            xhr.statusText,
+            headers,
+            xhr.status >= 200 && xhr.status < 300);
     }
 }

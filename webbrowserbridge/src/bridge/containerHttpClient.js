@@ -1,6 +1,7 @@
 import { Logger, Method } from "coreutil_v1";
 import { ContainerHttpResponse } from "./containerHttpResponse";
 import { ContainerUploadData } from "./containerUploadData";
+import { ContainerDownload } from "./containerDownload";
 
 const LOG = new Logger("ContainerHttpClient");
 
@@ -27,7 +28,7 @@ export class ContainerHttpClient {
      * @param {Number} timeout 
      * @returns 
      */
-    static async xhr(method, url, containerUploadData, authentication = null, progressCallbackMethod = null, timeout = 4000) {
+    static async upload(method, url, containerUploadData, authentication = null, progressCallbackMethod = null, timeout = 4000) {
 
         const xhr = new XMLHttpRequest();
         xhr.open(method, url, true);
@@ -46,6 +47,21 @@ export class ContainerHttpClient {
         const formData = containerUploadData._asFormData();
         xhr.send(formData);
         return ContainerHttpResponse._fromXhr(xhr, progressCallbackMethod);
+    }
+
+    /**
+     * 
+     * @param {String} url 
+     * @param {Object} params 
+     * @param {Number} timeout
+     * @returns {Promise<ContainerDownload>}
+     */
+    static async download(url, params, timeout = 4000) {
+        const response = await fetch(url, params);
+        const blob = await response.blob();
+        const fileName = response.headers.get("X-File-Name") || "download";
+        const containerDownload = new ContainerDownload(blob, fileName);
+        return containerDownload;
     }
 
     /**
