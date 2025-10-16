@@ -1,4 +1,6 @@
-import { ContainerAsync } from "./containerAsync";
+import { Logger } from "coreutil_v1";
+
+const LOG = new Logger("ContainerHttpResponse");
 
 export class ContainerHttpResponse {
     
@@ -126,16 +128,22 @@ export class ContainerHttpResponse {
      */
     static async _fromXhr(xhr, progressCallbackMethod) {
         const uploadPromise = new Promise((resolve, reject) => {
+            xhr.ontimeout = () => {
+                LOG.error("Upload timed out");
+                reject("Request timed out");
+            };
+            xhr.onerror = () => {
+                LOG.error("Upload failed due to an error");
+                reject("Request failed");
+            }
             xhr.onload = () => {
                 if (xhr.status >= 200 && xhr.status < 300) {
                     progressCallbackMethod.call([100]);
                     resolve(xhr.response);
                 } else {
+                    LOG.error("Upload failed with status " + xhr.status + ": " + xhr.statusText);
                     reject(xhr.response);
                 }
-            };
-            xhr.ontimeout = () => {
-                reject("Request timed out");
             };
         });
 
@@ -144,6 +152,7 @@ export class ContainerHttpResponse {
                 uploadPromise.then((response) => {
                     resolve(JSON.parse(response));
                 }).catch((error) => {
+                    LOG.error("Failed to parse JSON response: " + error);
                     reject(error);
                 });
             });
@@ -154,6 +163,7 @@ export class ContainerHttpResponse {
                 uploadPromise.then((response) => {
                     resolve(response);
                 }).catch((error) => {
+                    LOG.error("Failed to retrieve text response: " + error);
                     reject(error);
                 });
             });
@@ -165,6 +175,7 @@ export class ContainerHttpResponse {
                     const blob = new Blob([response]);
                     resolve(blob);
                 }).catch((error) => {
+                    LOG.error("Failed to retrieve blob response: " + error);
                     reject(error);
                 });
             });
