@@ -60,7 +60,8 @@ export class ContainerHttpClient {
         const response = await fetch(url, params);
         const blob = await response.blob();
         const fileName = response.headers.get("X-File-Name") || "download";
-        const containerDownload = new ContainerDownload(blob, fileName);
+        const status = response.status;
+        const containerDownload = new ContainerDownload(blob, fileName, status);
         return containerDownload;
     }
 

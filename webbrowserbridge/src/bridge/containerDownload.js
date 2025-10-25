@@ -5,12 +5,15 @@ export class ContainerDownload {
      * @param {Blob} blob 
      * @param {String} name
      */
-    constructor(blob, name = "download") {
+    constructor(blob, name = "download", status = 200) {
         /** @type {Blob} */
         this.blob = blob;
 
         /** @type {String} */
         this.name = name;
+
+        /** @type {Number} */
+        this.status = status;
     }
 
     /**
