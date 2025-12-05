@@ -118,4 +118,8 @@ export class ContainerEvent {
         return this.event.keyCode === code;
     }
 
+    get type() {
+        return this.event.type;
+    }
+
 }
