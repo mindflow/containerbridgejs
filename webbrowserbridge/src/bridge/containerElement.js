@@ -49,6 +49,10 @@ export class ContainerElement {
         return this.element.hasAttribute(attributeKey);
     }
 
+    removeEventListener(eventType, listener, capture = null) {
+        this.element.removeEventListener(eventType, listener, capture);
+    }
+
     get id() {
         return this.getAttributeValue("id");
     }
