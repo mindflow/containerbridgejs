@@ -8,25 +8,38 @@ const LOG = new Logger("ContainerHttpClient");
 export class ContainerHttpClient {
 
     /**
-     * 
      * @param {String} url 
      * @param {Object} params 
      * @param {Number} timeout
      * @return {Promise<ContainerHttpResponse>}
      */
     static async fetch(url, params, timeout = 4000) {
-        const responsePromise = fetch(url, params)
-        return ContainerHttpResponse._fromResponse(responsePromise, timeout);
+        try {
+            const response = await fetch(url, params);
+            return ContainerHttpResponse._fromResponse(response);
+        } catch (error) {
+            // If error from fetch is a timeout
+            if (error.name && error.name.toLowerCase() === "aborterror") {
+                LOG.error("Fetch call to " + url + " timed out after " + timeout + "ms");
+                throw { "message": "Request timed out", "group": -1, "code" : -11 };
+            }
+            // If error from fetch is a network error
+            if (error.message && error.message.toLowerCase() === "failed to fetch") {
+                LOG.error("Network error during fetch call to " + url + ": " + error);
+                throw { "message": "Network error", "group": -1, "code"  : -12 };
+            }
+            LOG.error("Unknown error during fetch call to " + url + ": " + error);
+            throw { "message": "Unknown error", "group": -1, "code" : -10 };
+        }
     }
 
     /**
-     * 
      * @param {String} method
      * @param {String} url 
      * @param {ContainerUploadData} containerUploadData 
      * @param {Method} progressCallbackMethod 
      * @param {Number} timeout 
-     * @returns 
+     * @returns {Promise<ContainerHttpResponse>}
      */
     static async upload(method, url, containerUploadData, authentication = null, progressCallbackMethod = null, timeout = 4000) {
 
@@ -41,16 +54,20 @@ export class ContainerHttpClient {
             progressCallbackMethod.call([Math.round((event.loaded / event.total) * 100)]);
         };
         xhr.ontimeout = () => {
-            return Promise.reject("Request timed out");
+            throw { "message": "Request timed out", "group": -1, "code"  : -11 };
         };
+        xhr.onerror = () => {
+            throw { "message": "Request failed", "group": -1, "code"  : -12 };
+        }
 
         const formData = containerUploadData._asFormData();
+
         xhr.send(formData);
         return ContainerHttpResponse._fromXhr(xhr, progressCallbackMethod);
+        
     }
 
     /**
-     * 
      * @param {String} url 
      * @param {Object} params 
      * @param {Number} timeout

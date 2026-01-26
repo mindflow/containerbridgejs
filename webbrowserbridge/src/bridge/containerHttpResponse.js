@@ -95,12 +95,11 @@ export class ContainerHttpResponse {
 
     /**
      * 
-     * @param {Promise<Response>} responsePromise
+     * @param {Response} response
      * @returns {ContainerHttpResponse}
      */
-    static async _fromResponse(responsePromise) {
+    static _fromResponse(response) {
 
-        const response = await responsePromise;
         const headers = new Map();
         for (const pair of response.headers.entries()) {
             headers.set(pair[0], pair[1]);
