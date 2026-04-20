@@ -180,6 +180,9 @@ export class ContainerElement {
         if (childElement instanceof ContainerText) {
             this.element.appendChild(childElement.text);
         }
+        if (childElement instanceof HTMLOptionElement) {
+            this.element.appendChild(childElement);
+        }
     }
 
     /**
