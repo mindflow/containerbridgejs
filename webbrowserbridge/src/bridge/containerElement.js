@@ -1,6 +1,8 @@
-import { Method } from "coreutil_v1";
+import { Logger, Method } from "coreutil_v1";
 import { ContainerEvent } from "./containerEvent";
 import { ContainerText } from "./containerText";
+
+const LOG = new Logger("ContainerElement");
 
 export class ContainerElement {
  
@@ -82,6 +84,16 @@ export class ContainerElement {
     }
 
     set value(value) {
+        if (this.element instanceof HTMLSelectElement) {
+            for (const option of this.element.options) {
+                if (option.value === value) {
+                    option.selected = true;
+                } else {
+                    option.selected = false;
+                }
+            }
+            return;
+        }
         this.element.value = value;
     }
 
