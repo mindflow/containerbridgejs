@@ -80,18 +80,39 @@ export class ContainerElement {
     }
 
     get value() {
+        if (this.element instanceof HTMLSelectElement) {
+            /** @type {HTMLSelectElement} */
+            const selectElement = this.element;
+            if (selectElement.options[selectElement.selectedIndex]) {
+                return selectElement.options[selectElement.selectedIndex].value;
+            }
+            return selectElement.value;
+        }
+        if (this.element instanceof HTMLTextAreaElement) {
+            /** @type {HTMLTextAreaElement} */
+            const textAreaElement = this.element;
+            return textAreaElement.textContent;
+        }
         return this.element.value;
     }
 
     set value(value) {
         if (this.element instanceof HTMLSelectElement) {
-            for (const option of this.element.options) {
+            /** @type {HTMLSelectElement} */
+            const selectElement = this.element;
+            for (const option of selectElement.options) {
                 if (option.value === value) {
                     option.selected = true;
                 } else {
                     option.selected = false;
                 }
             }
+            return;
+        }
+        if (this.element instanceof HTMLTextAreaElement) {
+            /** @type {HTMLTextAreaElement} */
+            const textAreaElement = this.element;
+            textAreaElement.value = value;
             return;
         }
         this.element.value = value;
