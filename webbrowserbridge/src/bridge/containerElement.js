@@ -282,35 +282,65 @@ export class ContainerElement {
         return this.element.dispatchEvent(new InputEvent(event));
     }
 
-    playMuted() {
-        if (this.element.play) {
-            this.element.muted = true;
-            return this.element.play();
+    async playMuted() {
+        let returnValue = null;
+        if (this.element instanceof HTMLMediaElement) {
+            try {
+                this.element.muted = true;
+                returnValue = await this.tryPlay();
+            } catch (error) {
+                console.error("Error playing media muted:", error);
+            }
         }
-        return null;
+        return returnValue;
     }
 
     mute() {
-        if(this.element.mute) {
+        if(this.element instanceof HTMLMediaElement) {
             this.element.muted = true;
         }
     }
 
     unmute() {
-        if(this.element.unmute) {
+        if(this.element instanceof HTMLMediaElement) {
             this.element.muted = false;
         }
     }
 
-    play() {
-        if (this.element.play) {
-            return this.element.play();
+    async play() {
+        let returnValue = null;
+        if (this.element instanceof HTMLMediaElement) {
+            try {
+                returnValue = await this.tryPlay();
+            } catch (error) {
+                console.error("Error playing media:", error);
+            }
         }
-        return null;
+        return returnValue;
+    }
+
+    async tryPlay() {
+        const retries = 3;
+        let currentTry = 0;
+
+        this.element.playsinline = true; // Crucial for iOS Safari
+        this.element.setAttribute('playsinline', ''); 
+        while (currentTry < retries) {
+            const returnValue = await this.element.play();
+            if (this.element.paused) {
+                if (currentTry < retries - 1) {
+                    currentTry++;
+                    continue;
+                }
+            } else {
+                return returnValue;
+            }
+        }
+        throw new Error("Media still paused after 3 play attempts.");
     }
 
     pause() {
-        if(this.element.pause) {
+        if(this.element instanceof HTMLMediaElement) {
             return this.element.pause();
         }
         return null;
